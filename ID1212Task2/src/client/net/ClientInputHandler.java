@@ -3,11 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+package client.net;
+
+import common.Message;
 
 /**
  *
- * @author Sothe
+ * @author Magnus
  */
-public class Testtest {
-    
+public class ClientInputHandler {
+    public void handleInput(Message recieved){
+        
+    }
 }
