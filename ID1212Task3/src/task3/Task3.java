@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package id1212task3;
+package task3;
 
 /**
  *
  * @author Sothe
  */
-public class ID1212Task3 {
+public class Task3 {
 
     /**
      * @param args the command line arguments

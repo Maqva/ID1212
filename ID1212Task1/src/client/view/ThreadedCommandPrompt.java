@@ -1,6 +1,5 @@
 package client.view;
 
-import client.controller.ClientController;
 import client.net.ClientInputHandler;
 import common.GameState;
 import common.Message;
@@ -18,7 +17,6 @@ public class ThreadedCommandPrompt implements Runnable{
     private final String WELCOME_MESSAGE = "Welcome to the Hangman game!\n\nUSAGE: ";
     private boolean running = true;
     private final ThreadSafeSystemOutput printr = new ThreadSafeSystemOutput();
-    private ClientController contr;
     private final Scanner userInput = new Scanner(System.in);
 
      public void startUp() {
@@ -26,7 +24,6 @@ public class ThreadedCommandPrompt implements Runnable{
             return;
         }
         running = true;
-        contr = new ClientController();
         new Thread(this).start();
     }
     
