@@ -1,10 +1,11 @@
-package chat.client;
+package chat;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Scanner;
 
 /**
@@ -20,6 +21,7 @@ public class ChatClient {
 	private String hostAddress;
 	private int port;
 	private Thread listenerThread;
+	private ServerListener listener;
 	
 	public ChatClient(String address, int serverPort) {
 		hostAddress = address;
@@ -62,9 +64,9 @@ public class ChatClient {
 		System.out.println("Connecting to "+hostAddress+" on port "+port);
 		Socket toConnect = new Socket(hostAddress, port);
 		serverWriter = new PrintWriter(toConnect.getOutputStream(), true);
-		listenerThread = new Thread(new ServerListener(toConnect));
+		listenerThread = new Thread(listener = new ServerListener(toConnect));
 		listenerThread.start();
-		System.out.println("Connection succesfull!");
+		System.out.println("Connection succesfull! type \"exit\" to close application");
 		String message;
 		while (true) {
 			message = inputScanner.nextLine();
@@ -77,25 +79,35 @@ public class ChatClient {
 				serverWriter.flush();
 			}
 		}
-		listenerThread.interrupt();
-		toConnect.close();
+		try {
+			listener.close();
+			listenerThread.join();
+			toConnect.close();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	private class ServerListener implements Runnable{
 		private BufferedReader serverReader;
 		private final String FRM_SRVR_MSSG = "From Server: ";
+		private boolean running = true;
 		
 		public ServerListener (Socket socket) throws IOException {
-			new BufferedReader(
+			serverReader = new BufferedReader(
 			        new InputStreamReader(socket.getInputStream()));	
+		}
+		public void close() {
+			running = false;
 		}
 		@Override
 		public void run() {
-			String message;
-			while (true) {
+			String msgFrmServer;
+			while (running) {
 				try {
-					if((message = serverReader.readLine())!=null) {
-						System.out.println(FRM_SRVR_MSSG+message);
+					if(serverReader.ready()&&(msgFrmServer=serverReader.readLine())!=null) {
+						System.out.println(FRM_SRVR_MSSG+msgFrmServer);
 					}
 				} catch (IOException e) {
 					System.err.println("A I/O Error occured while communicating with the server, disconnecting...");

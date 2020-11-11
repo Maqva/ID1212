@@ -1,4 +1,4 @@
-package chat.server;
+package chat;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -116,24 +116,21 @@ public class ChatServer {
 		public void run() {
 			String messageToSend, readInput;
 			while(connected) {
-				if(messageQueue.isEmpty()) {
-						try {
-							if((readInput = clientInputReader.readLine()) != null) {
-								server.broadcastMessage(readInput, this);
-							}
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+				try {
+					if(clientInputReader.ready()) {	
+						if((readInput = clientInputReader.readLine()) != null)
+							server.broadcastMessage(readInput, this);
+					}
+				} catch (IOException e) {
+					connected = false;
 				}
-				else{
-					messageToSend = messageQueue.poll();
-					clientOutputWriter.println(messageToSend);
+				if(!messageQueue.isEmpty()) {
+					while((messageToSend = messageQueue.poll())!=null)
+						clientOutputWriter.println(messageToSend);
 					clientOutputWriter.flush();
 				}
 			}
 		}
-		
-	}
-	
+	}		
 }
+

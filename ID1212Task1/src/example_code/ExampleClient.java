@@ -1,4 +1,4 @@
-package example_codes;
+package example_code;
 import java.io.*;
 import java.net.Socket;
 
