@@ -16,5 +16,6 @@ public class ExampleClient {
 			System.out.println(SYSTEM_RDY_TO_SEND_MSSG);
 		}
 		s.shutdownInput();
+		s.close();
 	}
 }

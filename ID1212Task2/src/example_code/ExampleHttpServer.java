@@ -24,15 +24,16 @@ public class ExampleHttpServer {
 		    while( (str = request.readLine()) != null && str.length() > 0){
 		    	System.out.println(str);
 		    }
-		    System.out.println("Förfrågan klar.");
+		    System.out.println("Förfrågan klar. fick request: "+requestedDocument);
 		    s.shutdownInput();
 		    
 		    PrintStream response =
 			new PrintStream(s.getOutputStream());
 		    response.println("HTTP/1.1 200 OK");
-		    response.println("Server: Trash 0.1 Beta");
+		    response.println("Server: Blep 0.1 Alpha");
 		    if(requestedDocument.indexOf(".html") != -1)
 		    	response.println("Content-Type: text/html");
+		    
 		    if(requestedDocument.indexOf(".gif") != -1)
 		    	response.println("Content-Type: image/gif");
 		    
@@ -40,12 +41,21 @@ public class ExampleHttpServer {
 	
 		    response.println();
 	        if(!"\favicon.ico".equals(requestedDocument)){
-	            File f = new File("."+requestedDocument);
-	            FileInputStream infil = new FileInputStream(f);
-	            byte[] b = new byte[1024];
-	            while( infil.available() > 0){
-	                response.write(b,0,infil.read(b));
-	            }
+	            response.println("<!DOCTYPE html>\r\n"
+	            		+ "<html>\r\n"
+	            		+ "    <head>\r\n"
+	            		+ "        <title>ID1212 assignment 2</title>\r\n"
+	            		+ "    </head>\r\n"
+	            		+ "    <body>\r\n"
+	            		+ "        <p>This is an example of a simple HTML page with one paragraph.</p>\r\n"
+	            		+ "		    <form action=\"/action_page.php\">\r\n"
+	            		+ "  			<label for=\"fname\">First name:</label><br>\r\n"
+	            		+ "  			<input type=\"text\" id=\"fname\" name=\"fname\" value=\"John\"><br>\r\n"
+	            		+ "  			<input type=\"submit\" value=\"Submit\">\r\n"
+	            		+ "			</form> "
+	            		+ "    </body>\r\n"
+	            		+ "</html>\r\n"
+	            		+ "");
 	            s.shutdownOutput();
 	            s.close();
 	        }

@@ -16,5 +16,6 @@ public class ExampleServer {
 			}
 			s.shutdownInput();
 		}
+		ss.close();
 	}
 }
