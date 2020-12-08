@@ -15,12 +15,8 @@ import java.util.Scanner;
  */
 public class ChatClient {
 	private final int DEFAULT_CONNECTING_PORT = 5000;
-	private PrintWriter serverWriter;
-	private Scanner inputScanner = new Scanner(System.in);
 	private String hostAddress;
 	private int port;
-	private Thread listenerThread;
-	private ServerListener listener;
 	
 	public ChatClient(String address, int serverPort) {
 		hostAddress = address;
@@ -30,6 +26,7 @@ public class ChatClient {
 		hostAddress = address;
 		port = DEFAULT_CONNECTING_PORT;
 	}
+	
 	public static void main (String[] args) {
 		ChatClient client = null;
 		if(args.length >= 2) {
@@ -51,7 +48,11 @@ public class ChatClient {
 		}
 		if(client != null) {
 			try {
-				client.connectToServer();
+				Socket s = client.connectToServer();
+				Thread listenerThread = client.initializeListenerThread(s);
+				listenerThread.start();
+				client.startMessageLoop(s);
+				s.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -59,14 +60,11 @@ public class ChatClient {
 		}
 	}
 	
-	public void connectToServer() throws IOException {
-		System.out.println("Connecting to "+hostAddress+" on port "+port);
-		Socket toConnect = new Socket(hostAddress, port);
-		serverWriter = new PrintWriter(toConnect.getOutputStream(), true);
-		listenerThread = new Thread(listener = new ServerListener(toConnect));
-		listenerThread.start();
-		System.out.println("Connection succesfull! type \"exit\" to close application");
+	private void startMessageLoop(Socket s) throws IOException {
+		PrintWriter serverWriter;
+		Scanner inputScanner = new Scanner(System.in);
 		String message;
+		serverWriter = new PrintWriter(s.getOutputStream(), true);
 		while (true) {
 			message = inputScanner.nextLine();
 			if(message.equalsIgnoreCase("exit")) {
@@ -75,45 +73,37 @@ public class ChatClient {
 			}
 			else {
 				serverWriter.println(message);
-				serverWriter.flush();
 			}
 		}
-		try {
-			listener.close();
-			listenerThread.join();
-			toConnect.close();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		inputScanner.close();
 	}
 	
-	private class ServerListener implements Runnable{
-		private BufferedReader serverReader;
-		private final String FRM_SRVR_MSSG = "From Server: ";
-		private boolean running = true;
-		
-		public ServerListener (Socket socket) throws IOException {
-			serverReader = new BufferedReader(
-			        new InputStreamReader(socket.getInputStream()));	
-		}
-		public void close() {
-			running = false;
-		}
-		@Override
-		public void run() {
+	private Thread initializeListenerThread(Socket s) throws IOException {
+		BufferedReader input = new BufferedReader(
+		        new InputStreamReader(s.getInputStream()));
+		Thread t = new Thread(() -> 
+		{
 			String msgFrmServer;
-			while (running) {
+			while (true) {
 				try {
-					if(serverReader.ready()&&(msgFrmServer=serverReader.readLine())!=null) {
-						System.out.println(FRM_SRVR_MSSG+msgFrmServer);
+					if(input.ready()&&(msgFrmServer=input.readLine())!=null) {
+						System.out.println("From Server: "+msgFrmServer);
 					}
 				} catch (IOException e) {
-					System.err.println("A I/O Error occured while communicating with the server, disconnecting...");
+					System.err.println("A I/O Error occured while communicating with the server, please restart the application...");
 					break;
 				}
 			}
-		}
-		
+		});
+		return t;
 	}
+	
+	private Socket connectToServer() throws IOException {
+		System.out.println("Connecting to "+hostAddress+" on port "+port);
+		Socket toConnect = new Socket(hostAddress, port);
+		System.out.println("Connection succesfull!");
+		
+		return toConnect;
+	}
+		
 }

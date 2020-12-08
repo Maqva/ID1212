@@ -127,7 +127,6 @@ public class ChatServer {
 				if(!messageQueue.isEmpty()) {
 					while((messageToSend = messageQueue.poll())!=null)
 						clientOutputWriter.println(messageToSend);
-					clientOutputWriter.flush();
 				}
 			}
 		}
