@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -52,10 +53,14 @@ public class ChatClient {
 				Thread listenerThread = client.initializeListenerThread(s);
 				listenerThread.start();
 				client.startMessageLoop(s);
+				listenerThread.interrupt();
 				s.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} 
+			catch(ConnectException e) {
+				System.out.println("Could not connect to the host, closing...");
+			}
+			catch (IOException e) {
+				System.out.println("A Input/Output Error has occured, closing...");
 			}
 		}
 	}
@@ -64,6 +69,7 @@ public class ChatClient {
 		PrintWriter serverWriter;
 		Scanner inputScanner = new Scanner(System.in);
 		String message;
+		System.out.println("Entered the chatroom, write message, or type \'exit\' to exit");
 		serverWriter = new PrintWriter(s.getOutputStream(), true);
 		while (true) {
 			message = inputScanner.nextLine();
@@ -84,7 +90,7 @@ public class ChatClient {
 		Thread t = new Thread(() -> 
 		{
 			String msgFrmServer;
-			while (true) {
+			while (!Thread.interrupted()) {
 				try {
 					if(input.ready()&&(msgFrmServer=input.readLine())!=null) {
 						System.out.println("From Server: "+msgFrmServer);
