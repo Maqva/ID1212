@@ -11,7 +11,7 @@ public class HTTPServer{
 		ServerSocket ss = new ServerSocket(8080);
 		Thread t;
 		while(true){
-		    System.out.println("Waiting for client...");
+		    System.out.println("Waiting for client number "+id+"...");
 		    Socket s = ss.accept();
 		    t = new Thread(new SocketSessionHandler(s, id));
 		    t.start();

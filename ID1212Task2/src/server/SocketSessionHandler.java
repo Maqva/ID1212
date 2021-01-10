@@ -63,7 +63,7 @@ public class SocketSessionHandler implements Runnable{
             		+ "        <title>ID1212 assignment 2</title>\r\n"
             		+ "    </head>\r\n"
             		+ "    <body>\r\n"
-            		+ "        <p>Your cookie .</p>\r\n"
+            		+ "        <p>Your cookie: "+sessionID+".</p>\r\n"
             		+ "		    <form action=\"/action_page.php\">\r\n"
             		+ "  			<label for=\"fname\">First name:</label><br>\r\n"
             		+ "  			<input type=\"text\" id=\"fname\" name=\"fname\" value=\"\"><br>\r\n"
