@@ -10,7 +10,7 @@ public class Post{
         this.text = s;
     }
     
-    public void setNickname(String s){
+    public void setName(String s){
         this.nickname = s;
     }
     
@@ -18,7 +18,7 @@ public class Post{
         return text;
     }
     
-    public String getNickname(){
+    public String getName(){
         return nickname;
     }
 }

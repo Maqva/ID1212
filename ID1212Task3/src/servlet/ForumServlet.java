@@ -37,7 +37,7 @@ public class ForumServlet extends HttpServlet {
         if(request.getParameter("email")!=null){
             out.println("<h1>New user!</h1>");
             bean.User u = (bean.User)session.getAttribute("user");
-            u.setNickname(request.getParameter("nickname"));
+            u.setName(request.getParameter("nickname"));
             u.setEmail(request.getParameter("email"));
             out.println("<form>");
             out.println("Text<input type=\"text\" name=\"text\"><br>");
@@ -50,13 +50,13 @@ public class ForumServlet extends HttpServlet {
             bean.Forum f = (bean.Forum)sc.getAttribute("forum");
             bean.Post p = new bean.Post();
             p.setText(request.getParameter("text"));
-            p.setNickname(u.getNickname());
+            p.setName(u.getName());
             f.addPost(p);
             ArrayList posts = f.getPosts();
             for(int i = 0; i < posts.size(); i++){
                 p  = (bean.Post)posts.get(i);
                 out.println("<b>" + p.getText() + "</b><br>");
-                out.println("<i>" + p.getNickname() + "</i><br>");
+                out.println("<i>" + p.getName() + "</i><br>");
             }
             out.println("<form>");
             out.println("Text<input type=\"text\" name=\"text\"><br>");
