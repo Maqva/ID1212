@@ -19,6 +19,7 @@ public class IMAPSSLClient {
 	
 	public void readInbox(String userName, String userPass) {
         try{
+        	//Initialize IMAP communication with the KTH mail server.
         	SSLSocketFactory sf = (SSLSocketFactory)SSLSocketFactory.getDefault();
 	        String[] cipher = {"TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384"};
 	        SSLSocket socket = (SSLSocket)sf.createSocket(hostAddress,hostPort);
@@ -31,7 +32,7 @@ public class IMAPSSLClient {
             //Handle login credentials
             String loginCommand = "LOGIN "+userName+" "+userPass;
             //add additional commands to inspect inbox, read one full email and log out
-            String[] commands = {loginCommand, "select inbox", "fetch 1 full", "logout"};
+            String[] commands = {loginCommand, "select inbox", "fetch 1 all", "fetch 1 body", "logout"};
             //itterate through commands
             for(String command : commands) {
             	sendIMAPCommand(command, writer);
@@ -55,11 +56,13 @@ public class IMAPSSLClient {
 		writer.flush();
 	}
 	
+	
 	private String readIMAPResponse(BufferedReader reader) throws IOException {
 		String output = "";
 		String str;
 		while( (str=reader.readLine()) != null) {
             output += str;
+        //IMAP responses end when the server responds with the A(checksum) at the beginning of the line
             if(str.charAt(0)=='A')
             	return output;
             else

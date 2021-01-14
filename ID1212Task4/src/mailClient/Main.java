@@ -8,14 +8,13 @@ public class Main {
 	
 	/**
 	 * 
-	 * @param args
+	 * @param args String array of arguments, 0 = email username, 1 = email password, 2 = public ipaddress, 3 = email address 
 	 */
 	public static void main(String[] args) {
 		IMAPSSLClient readingClient;
 		SMTPSTARTSSLClient writingClient;
 		readingClient = new IMAPSSLClient(receivingServerAddress, receivingServerPort);
 		readingClient.readInbox(args[0], args[1]);
-		System.out.print("Enter your IP address: ");
 		writingClient = new SMTPSTARTSSLClient(sendingServerAddress, sendingServerPort, args[2], args[3]);
 		writingClient.writeTestEmail(args[0], args[1]);
 	}

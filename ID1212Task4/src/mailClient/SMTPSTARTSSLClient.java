@@ -52,6 +52,7 @@ public class SMTPSTARTSSLClient {
 			    message = Base64.getEncoder().encodeToString(passWord.getBytes());
 			    sendCommand(message);
 			    System.out.println("Trying to send mail to "+emailAddress);
+			    
 			    //Send a email to the user
 				message = "MAIL FROM:<"+emailAddress+">";
 				sendCommand(message);
@@ -60,7 +61,8 @@ public class SMTPSTARTSSLClient {
 			    sendCommand("DATA");
 			    message="Subject:Test message from JAVA\n\nDefenitely not a real person\n here's a Test!\n.";
 			    sendCommand(message);
-			    //Log
+			    
+			    //Log Out
 			    sendCommand("QUIT");
 	            os.close();
 	            rdr.close();
@@ -82,6 +84,7 @@ public class SMTPSTARTSSLClient {
 		String str;
 		while((str = rdr.readLine())!=null) {
 			output += str;
+		//SMTP messages indicate last line of a response by not including a "-" after the control code
 			if(str.charAt(3)=='-')
 				output += "\n";
 			else break;

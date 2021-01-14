@@ -7,7 +7,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Properties;
-
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -38,6 +37,7 @@ public class RemoteMailServer implements MailReader{
 	
 	public String readMail(int index, String userName, String passWord){
 		try {
+			//Initializes Inbox
 			Properties props = new Properties();
 			props.setProperty("mail.store.protocol", "imaps");
 			Session emailSession = Session.getDefaultInstance(props);
@@ -46,6 +46,8 @@ public class RemoteMailServer implements MailReader{
 			Folder emailFolder = emailStore.getFolder("INBOX");
 			emailFolder.open(Folder.READ_ONLY);
 			Message[] messages = emailFolder.getMessages();
+			
+			//Opens the mail of a given index
 			Message m = messages[index];
 			String output = "";
 			output += "From: "+m.getFrom()[0];
