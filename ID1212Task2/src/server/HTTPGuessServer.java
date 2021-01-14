@@ -20,7 +20,7 @@ public class HTTPGuessServer{
 	private int nextId = 1;
 	private boolean running = true;
 	private final String COOKIE_EXPIRATION_STRING = "Wednesday,20-Jan-21 21:00:00 GMT";
-	private final String FAVICO_PATH = "D:\\Programing\\ID1212\\ID1212Task2\\src\\favicon.ico";
+	private final String FAVICO_PATH = "src/favicon.ico";
 	
 	public static void main(String[] args) throws IOException{
 		HTTPGuessServer server = new HTTPGuessServer();

@@ -20,7 +20,7 @@
     <%for(i = 1; i < 4; i++){%>
     	<p><%= beans[(i-1)].getQuestion()%></p>
     	<%for(y = 0; y < 3; y++){%>
-    		<input type="radio" id="<%=y %>" name = "guess<%=i %>" value = "<%=y%>"required>
+    		<input type="radio" id="<%=""+i+":"+y %>" name = "guess<%=i %>" value = "<%=y%>"required>
     		<label for = "<%=y %>"><%= beans[i-1].getAnswers()[y]%></label><br>
     	<%}%>
     	<br>

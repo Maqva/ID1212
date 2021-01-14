@@ -1,14 +1,8 @@
 package servlet;
 
-import java.beans.beancontext.BeanContext;
-import java.io.EOFException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -17,10 +11,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import bean.QuestionBean;
-import bean.UserBean;
 import database.DataBaseObject;
 
 public class QuizzServlet extends HttpServlet {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3654898012034774933L;
 	private final int DEFAULT_NO_OF_QUESTIONS = 3;
        
     /**
@@ -92,7 +89,7 @@ public class QuizzServlet extends HttpServlet {
 		session.removeAttribute("guess1");
 		session.removeAttribute("guess2");
 		session.removeAttribute("guess3");
-		ArrayList<QuestionBean> list = loadQuestions();
+		ArrayList<QuestionBean> list = DataBaseObject.loadQuestionBeans();
 		if(list != null) {
 			Collections.shuffle(list);
 			for(int i = 1; i <= DEFAULT_NO_OF_QUESTIONS; i++) {
@@ -100,44 +97,4 @@ public class QuizzServlet extends HttpServlet {
 			}
 		}
 	}
-	
-	private ArrayList<UserBean> loadUsers() {
-			ObjectInputStream ois = DataBaseObject.loadUserBeanStream();
-			ArrayList<UserBean> out = new ArrayList<UserBean>();
-			UserBean b;
-			while(true) {
-				try {
-					b = (UserBean)ois.readObject();
-					out.add(b);
-				} catch(EOFException e ) {
-					return out;
-				}				
-				catch (ClassNotFoundException e) {
-					return null;
-				} catch (IOException e) {
-					return null;
-				}
-			}
-		
-	}
-	
-	private ArrayList<QuestionBean> loadQuestions() {
-			ObjectInputStream ois = DataBaseObject.loadQuestionBeanStream();
-			ArrayList<QuestionBean> out = new ArrayList<QuestionBean>();
-			QuestionBean b;
-			while(true) {
-				try {
-					b = (QuestionBean)ois.readObject();
-					out.add(b);
-				} 
-				catch(EOFException e) {
-					return out;
-				}catch (ClassNotFoundException e) {
-					return null;
-				} catch (IOException e) {
-					return null;
-				}
-			}
-	}
-	
 }

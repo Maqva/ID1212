@@ -1,8 +1,6 @@
 package bean;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class QuestionBean implements Serializable {
 	private static final long serialVersionUID = -2599445434206233791L;
